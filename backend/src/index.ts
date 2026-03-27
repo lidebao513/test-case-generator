@@ -5,6 +5,11 @@
 import express from 'express'
 import cors from 'cors'
 import uploadRoute from './routes/upload'
+import knowledgeRoute from './routes/knowledge'
+import testPointRoute from './routes/testPoint'
+import promptRoute from './routes/prompt'
+import testManagementRoute from './routes/testManagement'
+import { errorHandler, notFound } from './middleware/errorHandler'
 
 // 创建Express应用实例
 const app = express()
@@ -17,6 +22,18 @@ app.use(cors())
 app.use(express.json())
 // 注册上传路由，前缀为/api
 app.use('/api', uploadRoute)
+// 注册知识库路由，前缀为/api/knowledge
+app.use('/api/knowledge', knowledgeRoute)
+// 注册测试点路由，前缀为/api
+app.use('/api', testPointRoute)
+// 注册提示词模板路由，前缀为/api/prompt
+app.use('/api/prompt', promptRoute)
+// 注册测试管理系统对接路由，前缀为/api/test-management
+app.use('/api/test-management', testManagementRoute)
+
+// 注册错误处理中间件
+app.use(notFound) // 404错误处理
+app.use(errorHandler) // 全局错误处理
 
 // 启动服务器
 app.listen(PORT, () => {

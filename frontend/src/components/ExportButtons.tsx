@@ -4,6 +4,7 @@
  */
 import React from 'react'
 import * as XLSX from 'xlsx'
+import { useToast } from './Toast'
 
 /**
  * 组件属性接口
@@ -16,11 +17,16 @@ interface ExportButtonsProps {
  * 导出按钮组件
  */
 const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
+  const { showToast } = useToast()
   /**
    * 处理Excel导出
    * 使用xlsx库生成真正的.xlsx文件
    */
   const handleExportExcel = () => {
+    if (testCases.length === 0) {
+      showToast('没有测试用例可导出', 'warning')
+      return
+    }
     // 准备Excel数据
     const headers = ['ID', '标题', '描述', '测试步骤', '预期结果', '优先级']
     const rows = testCases.map(testCase => [
@@ -53,6 +59,7 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
     
     // 导出为Excel文件
     XLSX.writeFile(wb, 'test-cases.xlsx')
+    showToast('Excel导出成功', 'success')
   }
 
   /**
@@ -60,6 +67,10 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
    * 将测试用例转换为JSON格式并下载
    */
   const handleExportJson = () => {
+    if (testCases.length === 0) {
+      showToast('没有测试用例可导出', 'warning')
+      return
+    }
     // 导出JSON功能
     const dataStr = JSON.stringify(testCases, null, 2) // 转换为格式化的JSON字符串
     const dataBlob = new Blob([dataStr], { type: 'application/json' }) // 创建Blob对象
@@ -69,6 +80,7 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
     link.download = 'test-cases.json' // 设置文件名
     link.click() // 触发下载
     URL.revokeObjectURL(url) // 释放临时URL
+    showToast('JSON导出成功', 'success')
   }
 
   /**
@@ -76,6 +88,10 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
    * 将测试用例部署为在线文档
    */
   const handleDeployToEdgeOne = () => {
+    if (testCases.length === 0) {
+      showToast('没有测试用例可部署', 'warning')
+      return
+    }
     // 准备部署数据
     const htmlContent = generateHtmlContent(testCases)
     
@@ -87,7 +103,7 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ testCases }) => {
     window.open(url, '_blank')
     
     // 提示用户
-    alert('测试用例已生成HTML文档，可部署到EdgeOne Pages')
+    showToast('测试用例已生成HTML文档，可部署到EdgeOne Pages', 'info')
   }
 
   /**

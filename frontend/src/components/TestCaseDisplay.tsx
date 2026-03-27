@@ -103,7 +103,7 @@ const TestCaseDisplay: React.FC<TestCaseDisplayProps> = ({ testCases }) => {
       // 搜索筛选
       const searchMatch = searchTerm === '' || 
         testCase.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        testCase.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (testCase.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
       
       return priorityMatch && searchMatch
     })

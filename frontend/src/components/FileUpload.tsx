@@ -8,7 +8,7 @@ import React, { useState } from 'react'
  * 组件属性接口
  */
 interface FileUploadProps {
-  onFileUpload: (file: File) => void // 文件上传回调函数
+  onFileUpload: (selectedFile: File) => void // 文件上传回调函数
   loading: boolean // 加载状态
 }
 
